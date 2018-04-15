@@ -83,8 +83,6 @@ object ToyBlast {
   val act3 = iniActuarN3()
   
   
-//RAUL
-
   /**
    * le pasamos la posicion, comprueba si se puede borrar
    * y llama a una funcion auxiliar para comprobar todos los que tendra que borrar, que es la lista que devuelve
@@ -187,6 +185,7 @@ object ToyBlast {
 
   //POSIBLE OPTIMIZACION PASAR AL AUX EL VALOR QUE TENEMSO QUE BUSCAR PARA NO MIRAR TODO EL RATO, IGUAL QUE AQUI EN LOS IF
   def seleccionarFicha(x: Int, y: Int, tablero: List[List[Int]], actuar: List[List[Boolean]]): List[List[Boolean]] = {
+
     val laux1 =
       if ((((x - 1) >= 0) && getPosicion(x, y, tablero) == getPosicion(x - 1, y, tablero))) { //la x mayor o igual que 0
         //PONER A TRUEEE
@@ -202,7 +201,7 @@ object ToyBlast {
         setPosicionBool(true, x, y, laux1)
         seleccionarFichaAux(x, y, tablero, laux1)
       } else {
-        actuar
+        laux1
       }
 
     val laux3 =
@@ -211,8 +210,9 @@ object ToyBlast {
         setPosicionBool(true, x, y, laux2)
         seleccionarFichaAux(x, y, tablero, laux2)
       } else {
-        actuar
+        laux2
       }
+      
 
     val laux4 =
       if ((((y + 1) < getPosicionX(x, tablero).length) && getPosicion(x, y, tablero) == getPosicion(x, y + 1, tablero))) { //la y menor que la longitud de y
@@ -220,7 +220,7 @@ object ToyBlast {
         setPosicionBool(true, x, y, laux3)
         seleccionarFichaAux(x, y, tablero, laux3)
       } else {
-        actuar
+        laux3
       }
 
     laux4
@@ -228,37 +228,84 @@ object ToyBlast {
 
   def seleccionarFichaAux(x: Int, y: Int, tablero: List[List[Int]], actuar: List[List[Boolean]]): List[List[Boolean]] = {
     //TRUEEEEEEEE
-    setPosicionBool(true, x, y, actuar)
+    print("Soy  " +x + y)
+    val laux0 = setPosicionBool(true, x, y, actuar)
     val laux1 =
-      if ((((x - 1) >= 0) && getPosicion(x, y, tablero) == getPosicion(x - 1, y, tablero)) && !getPosicionBool(x, y, actuar)) { //la x mayor o igual que 0
-        seleccionarFichaAux(x, y, tablero, actuar)
+      if ((((x - 1) >= 0) && getPosicion(x, y, tablero) == getPosicion(x - 1, y, tablero)) && !getPosicionBool(x-1, y, laux0)) { //la x mayor o igual que 0
+        seleccionarFichaAux(x-1, y, tablero, laux0)
       } else {
-        actuar
+        laux0
       }
 
     val laux2 =
-      if ((((y - 1) >= 0) && getPosicion(x, y, tablero) == getPosicion(x, y - 1, tablero)) && !getPosicionBool(x, y, laux1)) { //la y mayor o igual que 0
-        seleccionarFichaAux(x, y, tablero, laux1)
+      if ((((y - 1) >= 0) && getPosicion(x, y, tablero) == getPosicion(x, y - 1, tablero)) && !getPosicionBool(x, y-1, laux1)) { //la y mayor o igual que 0
+        seleccionarFichaAux(x, y-1, tablero, laux1)
       } else {
-        actuar
+        laux1
       }
 
     val laux3 =
-      if ((((x + 1) < tablero.length) && getPosicion(x, y, tablero) == getPosicion(x + 1, y, tablero)) && !getPosicionBool(x, y, laux2)) { //la xmenor que la longitud del tablero (x)
-        seleccionarFichaAux(x, y, tablero, laux2)
+      if ((((x + 1) < tablero.length) && getPosicion(x, y, tablero) == getPosicion(x + 1, y, tablero)) && !getPosicionBool(x+1, y, laux2)) { //la xmenor que la longitud del tablero (x)
+        seleccionarFichaAux(x+1, y, tablero, laux2)
       } else {
-        actuar
+        laux2
       }
 
     val laux4 =
-      if ((((y + 1) < getPosicionX(x, tablero).length) && getPosicion(x, y, tablero) == getPosicion(x, y + 1, tablero)) && !getPosicionBool(x, y, laux3)) { //la y menor que la longitud de y
-        seleccionarFichaAux(x, y, tablero, laux3)
+      if ((((y + 1) < getPosicionX(x, tablero).length) && getPosicion(x, y, tablero) == getPosicion(x, y + 1, tablero)) && !getPosicionBool(x, y+1, laux3)) { //la y menor que la longitud de y
+        seleccionarFichaAux(x, y+1, tablero, laux3)
       } else {
-        actuar
+        laux3
       }
 
     laux4
   }
+  
+ def imprimirTablero(tablero: List[List[Int]]): Int = {
+    if (tablero.isEmpty) { //si no hay tablero
+      -1
+    } else {
+    	imprimirTableroY(tablero.head)
+    	imprimirTablero(tablero.tail)
+    }
+  }
+
+  def imprimirTableroY(fila: List[Int]): Int ={
+    if (fila.isEmpty) { //si no hay tablero
+      println
+      -1
+    } else {
+    	print(fila.head + "  ")
+    	imprimirTableroY(fila.tail)
+    }
+  }
+  
+   def imprimirTableroBool(tablero: List[List[Boolean]]): Int = {
+    if (tablero.isEmpty) { //si no hay tablero
+      -1
+    } else {
+    	imprimirTableroYBool(tablero.head)
+    	imprimirTableroBool(tablero.tail)
+    }
+  }
+
+  def imprimirTableroYBool(fila: List[Boolean]): Int ={
+    if (fila.isEmpty) { //si no hay tablero
+      println
+      -1
+    } else {
+    	print(fila.head + "  ")
+    	imprimirTableroYBool(fila.tail)
+    }
+  }
+  
+  imprimirTablero(tablero1)
+  imprimirTableroBool(act3)
+  
+  // val salidaAux11 =setPosicionBool(true, 1, 1, act3)
+   val salidaAux11 = seleccionarFicha(4,1,tablero1,act3)
+
+imprimirTableroBool(salidaAux11)
 
   def guardarPartida() = {
   }
@@ -268,7 +315,6 @@ object ToyBlast {
 
   def estadisticas() = {
   }
-
 
 
 
