@@ -23,17 +23,17 @@ object ToyBlast {
   	if (x == 0) Nil
   	else iniTablero(x-1, y, n, fichas):::iniTablerox(y, n, fichas)::Nil
   }
-  /*
-  def eliminarXYTab(x:Int, y:Int, t:List[List[Int]]): List[List[Int]]={
-  	if (x == 0) if (y == 0) 0::t.head.tail
-  		else eliminarXYTab(x, y-1, )
-  }*/
   
-  def borradoTab(x:Int, y:Int, ly:Int tablero:List[List[Int]], actuar:List[List[Boolean]]): List[List[Int]]={
-  	if (x < 0) Nil
-  	else if (y < 0) borradoTab(x-1, ly, ly, tablero, actuar)
-  		else if (actuar.apply(x).apply(y)) if (y == 0) (0::Nil)::borradoTab(x-1, ly, ly, (tablero.tail))
-  											else (0::tablero.head.tail)::borradoTab(x, y-1, ly, )
+  //da igual como borremos, asi que borramos por filas
+  def borradoTabx(lista:List[Int], actuarl:List[Boolean]): List[Int]={// se encarga de las filas borra los que estén a true en actuarl
+  	if (lista.isEmpty) Nil
+  	else if (actuarl.head) 0::borradoTabx(lista.tail, actuarl.tail)
+  		else lista.head::borradoTabx(lista.tail, actuarl.tail)
+  }
+  
+  def borradoTab(tablero:List[List[Int]], actuar:List[List[Boolean]]): List[List[Int]]={
+  	if (tablero.isEmpty) Nil
+  	else borradoTabx(tablero.head, actuar.head)::borradoTab(tablero.tail, actuar.tail)
   }
   
   def iniFichasN1(): List[Int]={
@@ -72,6 +72,78 @@ object ToyBlast {
   	List.fill(15)(List.fill(27)(false))
   }
   
+  //Adaptación de setPosicionBool para enteros
+  
+  def setPosicionInt(v:Int, x: Int, y: Int, tablero: List[List[Int]]): List[List[Int]] = {
+    setPosicionXInt(v, x, y, tablero)
+  }
+  
+  def setPosicionXInt(v:Int, x: Int, y:Int, tablero: List[List[Int]]): List[List[Int]] = {
+    if (tablero.isEmpty) { //si no hay tablero
+      null
+    } else {
+      if (x == 0) {
+        setPosicionYInt(v, y, tablero.head) :: tablero.tail
+      } else {
+        tablero.head :: setPosicionXInt(v, x - 1, y, tablero.tail)
+      }
+    }
+  }
+
+  def setPosicionYInt(v:Int, y: Int, fila: List[Int]): List[Int] = {
+      if (y == 0) {
+        v :: fila.tail
+      } else {
+       fila.head :: setPosicionYInt(v, y - 1, fila.tail)
+      }
+    
+  }
+  
+  def tomaColumna(x:Int, y:Int, tablero:List[List[Int]]): List[Int]={//devuelve la columna X
+  	if (y<0) Nil
+  	else tablero.head.apply(x)::tomaColumna(x, y-1, tablero.tail)
+  }
+   
+  def tomaFicha(y:Int, columna:List[Int]): List[Int]={//toma la primera ficha mayor que 0 que encuentre antes del nivel 0
+  	if (y<0) List(0, 0) // por seguridad
+  	else if (columna.apply(y) == 0) tomaFicha(y-1, columna)
+  		else List(columna.apply(y), y)
+  }
+  
+  def rellenaColumnas(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={
+  	val c = tomaColumna(x, y, tablero)
+  	val tomada = tomaFicha(y-1, c)
+  	val r = fichas.apply(Random.nextInt(f))
+  	if (y<0) tablero
+  	else
+  		if (tablero.apply(y).apply(x) == 0)
+  			if (tomada.head == 0) rellenaColumnas(x, y-1, setPosicionInt(r,x,y,tablero), f, fichas)
+  			else rellenaColumnas(x, y-1, setPosicionInt(tomada.head,x,y,setPosicionInt(0, x, tomada.last, tablero)), f, fichas)
+  		else rellenaColumnas(x, y-1, tablero, f, fichas)
+  }
+   
+  def rellenaColumnasOptRand(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={//rellena desde esa posición con enteros aleatorios posibles
+  	val r = fichas.apply(Random.nextInt(f))
+  	if (y<0) tablero
+  	else rellenaColumnasOptRand(x, y-1, setPosicionInt(r,x,y,tablero), f, fichas)
+  }
+  
+  def rellenaColumnasOpt(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={//Optimizado
+  	val c = tomaColumna(x, y, tablero)
+  	val tomada = tomaFicha(y-1, c)
+  	if (y<0) tablero
+  	else
+  		if (tablero.apply(y).apply(x) == 0)
+  			if (tomada.head == 0) rellenaColumnasOptRand(x, y, tablero, f, fichas)//si no ha encontrado, los siguientes darán igual resultado, no busca más
+  			else rellenaColumnasOpt(x, y-1, setPosicionInt(tomada.head,x,y,setPosicionInt(0, x, tomada.last, tablero)), f, fichas)
+  		else rellenaColumnasOpt(x, y-1, tablero, f, fichas)
+  }
+  
+  def rellenar(x:Int, ly:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={
+  	if (x<0) tablero
+  	else rellenar(x-1, ly, rellenaColumnasOpt(x, ly, tablero, f, fichas), f, fichas)
+  }
+  
   val fichas1 = iniFichasN1()
   val tablero1 = iniTableroN1(fichas1)
   val fichas2 = iniFichasN2()
@@ -81,6 +153,8 @@ object ToyBlast {
   val act1 = iniActuarN1()
   val act2 = iniActuarN2()
   val act3 = iniActuarN3()
+  val act12 = setPosicionBool(true, 3, 4, act1)
+  val tablero12 = borradoTab(tablero1, act12)
   
   
   /**
