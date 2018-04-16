@@ -97,10 +97,10 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
        fila.head :: setPosicionYInt(v, y - 1, fila.tail)
       }
     
-  };System.out.println("""setPosicionYInt: (v: Int, y: Int, fila: List[Int])List[Int]""");$skip(181); 
+  };System.out.println("""setPosicionYInt: (v: Int, y: Int, fila: List[Int])List[Int]""");$skip(188); 
   
   def tomaColumna(x:Int, y:Int, tablero:List[List[Int]]): List[Int]={//devuelve la columna X
-  	if (y<0) Nil
+  	if (y<0 || x<0) Nil
   	else tablero.head.apply(x)::tomaColumna(x, y-1, tablero.tail)
   };System.out.println("""tomaColumna: (x: Int, y: Int, tablero: List[List[Int]])List[Int]""");$skip(264); 
    
@@ -108,30 +108,30 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   	if (y<0) List(0, 0) // por seguridad
   	else if (columna.apply(y) == 0) tomaFicha(y-1, columna)
   		else List(columna.apply(y), y)
-  };System.out.println("""tomaFicha: (y: Int, columna: List[Int])List[Int]""");$skip(562); 
+  };System.out.println("""tomaFicha: (y: Int, columna: List[Int])List[Int]""");$skip(569); 
   
   def rellenaColumnas(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={
   	val c = tomaColumna(x, y, tablero)
   	val tomada = tomaFicha(y-1, c)
   	val r = fichas.apply(Random.nextInt(f))
-  	if (y<0) tablero
+  	if (y<0 || x<0) tablero
   	else
   		if (tablero.apply(y).apply(x) == 0)
   			if (tomada.head == 0) rellenaColumnas(x, y-1, setPosicionInt(r,x,y,tablero), f, fichas)
   			else rellenaColumnas(x, y-1, setPosicionInt(tomada.head,x,y,setPosicionInt(0, x, tomada.last, tablero)), f, fichas)
   		else rellenaColumnas(x, y-1, tablero, f, fichas)
-  };System.out.println("""rellenaColumnas: (x: Int, y: Int, tablero: List[List[Int]], f: Int, fichas: List[Int])List[List[Int]]""");$skip(324); 
+  };System.out.println("""rellenaColumnas: (x: Int, y: Int, tablero: List[List[Int]], f: Int, fichas: List[Int])List[List[Int]]""");$skip(331); 
    
   def rellenaColumnasOptRand(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={//rellena desde esa posición con enteros aleatorios posibles
   	val r = fichas.apply(Random.nextInt(f))
-  	if (y<0) tablero
+  	if (y<0 || x<0) tablero
   	else rellenaColumnasOptRand(x, y-1, setPosicionInt(r,x,y,tablero), f, fichas)
-  };System.out.println("""rellenaColumnasOptRand: (x: Int, y: Int, tablero: List[List[Int]], f: Int, fichas: List[Int])List[List[Int]]""");$skip(596); 
+  };System.out.println("""rellenaColumnasOptRand: (x: Int, y: Int, tablero: List[List[Int]], f: Int, fichas: List[Int])List[List[Int]]""");$skip(603); 
   
   def rellenaColumnasOpt(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={//Optimizado
   	val c = tomaColumna(x, y, tablero)
   	val tomada = tomaFicha(y-1, c)
-  	if (y<0) tablero
+  	if (y<0 || x<0) tablero
   	else
   		if (tablero.apply(y).apply(x) == 0)
   			if (tomada.head == 0) rellenaColumnasOptRand(x, y, tablero, f, fichas)//si no ha encontrado, los siguientes darán igual resultado, no busca más
@@ -142,7 +142,19 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   def rellenar(x:Int, ly:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={
   	if (x<0) tablero
   	else rellenar(x-1, ly, rellenaColumnasOpt(x, ly, tablero, f, fichas), f, fichas)
-  };System.out.println("""rellenar: (x: Int, ly: Int, tablero: List[List[Int]], f: Int, fichas: List[Int])List[List[Int]]""");$skip(33); 
+  };System.out.println("""rellenar: (x: Int, ly: Int, tablero: List[List[Int]], f: Int, fichas: List[Int])List[List[Int]]""");$skip(124); 
+  
+  def rellenarN1(tablero:List[List[Int]], fichas:List[Int]): List[List[Int]]={
+  	rellenar(7, 9, tablero, 4, fichas)
+  };System.out.println("""rellenarN1: (tablero: List[List[Int]], fichas: List[Int])List[List[Int]]""");$skip(126); 
+  
+  def rellenarN2(tablero:List[List[Int]], fichas:List[Int]): List[List[Int]]={
+  	rellenar(11, 17, tablero, 5, fichas)
+  };System.out.println("""rellenarN2: (tablero: List[List[Int]], fichas: List[Int])List[List[Int]]""");$skip(126); 
+  
+  def rellenarN3(tablero:List[List[Int]], fichas:List[Int]): List[List[Int]]={
+  	rellenar(15, 27, tablero, 6, fichas)
+  };System.out.println("""rellenarN3: (tablero: List[List[Int]], fichas: List[Int])List[List[Int]]""");$skip(33); 
   
   val fichas1 = iniFichasN1();System.out.println("""fichas1  : List[Int] = """ + $show(fichas1 ));$skip(39); 
   val tablero1 = iniTableroN1(fichas1);System.out.println("""tablero1  : List[List[Int]] = """ + $show(tablero1 ));$skip(30); 
@@ -154,7 +166,9 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   val act2 = iniActuarN2();System.out.println("""act2  : List[List[Boolean]] = """ + $show(act2 ));$skip(27); 
   val act3 = iniActuarN3();System.out.println("""act3  : List[List[Boolean]] = """ + $show(act3 ));$skip(48); 
   val act12 = setPosicionBool(true, 3, 4, act1);System.out.println("""act12  : List[List[Boolean]] = """ + $show(act12 ));$skip(46); 
-  val tablero12 = borradoTab(tablero1, act12);System.out.println("""tablero12  : List[List[Int]] = """ + $show(tablero12 ));$skip(488); 
+  val tablero12 = borradoTab(tablero1, act12);System.out.println("""tablero12  : List[List[Int]] = """ + $show(tablero12 ));$skip(45); 
+  val tablero5 = iniTableroN1(List(4,4,4,4));System.out.println("""tablero5  : List[List[Int]] = """ + $show(tablero5 ));$skip(28); val res$0 = 
+  imprimirTablero(tablero5);System.out.println("""res0: Int = """ + $show(res$0));$skip(488); 
   
   
   /**
@@ -190,10 +204,10 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
         getPosicionY(y - 1, fila.tail)
       }
     }
-  };System.out.println("""getPosicionY: (y: Int, fila: List[Int])Int""");$skip(29); val res$0 = 
+  };System.out.println("""getPosicionY: (y: Int, fila: List[Int])Int""");$skip(29); val res$1 = 
 
-  getPosicionX(1, tablero3);System.out.println("""res0: List[Int] = """ + $show(res$0));$skip(30); val res$1 = 
-  getPosicion(1, 7, tablero3);System.out.println("""res1: Int = """ + $show(res$1));$skip(214); 
+  getPosicionX(1, tablero3);System.out.println("""res1: List[Int] = """ + $show(res$1));$skip(30); val res$2 = 
+  getPosicion(1, 7, tablero3);System.out.println("""res2: Int = """ + $show(res$2));$skip(214); 
 
   //igual pero de bool, funciona bien
 
@@ -224,10 +238,10 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
         getPosicionYBool(y - 1, fila.tail)
       }
     }
-  };System.out.println("""getPosicionYBool: (y: Int, fila: List[Boolean])Boolean""");$skip(29); val res$2 = 
+  };System.out.println("""getPosicionYBool: (y: Int, fila: List[Boolean])Boolean""");$skip(29); val res$3 = 
 
-  getPosicionX(1, tablero3);System.out.println("""res2: List[Int] = """ + $show(res$2));$skip(30); val res$3 = 
-  getPosicion(1, 7, tablero3);System.out.println("""res3: Int = """ + $show(res$3));$skip(204); 
+  getPosicionX(1, tablero3);System.out.println("""res3: List[Int] = """ + $show(res$3));$skip(30); val res$4 = 
+  getPosicion(1, 7, tablero3);System.out.println("""res4: Int = """ + $show(res$4));$skip(204); 
   
   //PONE LA POSICON A LO QUE LE PASES, funciona guay
 
@@ -371,15 +385,15 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
     	print(fila.head + "  ")
     	imprimirTableroYBool(fila.tail)
     }
-  };System.out.println("""imprimirTableroYBool: (fila: List[Boolean])Int""");$skip(31); val res$4 = 
+  };System.out.println("""imprimirTableroYBool: (fila: List[Boolean])Int""");$skip(31); val res$5 = 
   
-  imprimirTablero(tablero1);System.out.println("""res4: Int = """ + $show(res$4));$skip(28); val res$5 = 
-  imprimirTableroBool(act3);System.out.println("""res5: Int = """ + $show(res$5));$skip(116); 
+  imprimirTablero(tablero1);System.out.println("""res5: Int = """ + $show(res$5));$skip(28); val res$6 = 
+  imprimirTableroBool(act3);System.out.println("""res6: Int = """ + $show(res$6));$skip(116); 
   
   // val salidaAux11 =setPosicionBool(true, 1, 1, act3)
-   val salidaAux11 = seleccionarFicha(4,1,tablero1,act3);System.out.println("""salidaAux11  : List[List[Boolean]] = """ + $show(salidaAux11 ));$skip(34); val res$6 = 
+   val salidaAux11 = seleccionarFicha(4,1,tablero1,act3);System.out.println("""salidaAux11  : List[List[Boolean]] = """ + $show(salidaAux11 ));$skip(34); val res$7 = 
 
-imprimirTableroBool(salidaAux11);System.out.println("""res6: Int = """ + $show(res$6));$skip(32); 
+imprimirTableroBool(salidaAux11);System.out.println("""res7: Int = """ + $show(res$7));$skip(32); 
 
   def guardarPartida() = {
   };System.out.println("""guardarPartida: ()Unit""");$skip(37); 
