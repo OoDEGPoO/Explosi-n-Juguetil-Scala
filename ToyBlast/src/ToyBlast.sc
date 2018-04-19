@@ -536,8 +536,22 @@ object ToyBlast {
       println
       -1
     } else {
-    	print(fila.head + "  ")
+    	print(colocarColores(fila.head) + "  ")
     	imprimirTableroY(fila.tail)
+    }
+  }
+  
+    //cambiamos los numeros por colores
+  def colocarColores(color: Int): Char ={
+    color match {
+      case 1 => 'A'
+      case 2 => 'R'
+      case 3 => 'N'
+      case 4 => 'V'
+      case 5 => 'P'
+      case 6 => 'M'
+      case 7 => 'G'
+      case 8 => 'B'
     }
   }
   
