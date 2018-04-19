@@ -552,6 +552,17 @@ object ToyBlast {
       case 6 => 'M'
       case 7 => 'G'
       case 8 => 'B'
+      case -1 => '^'
+      case -2 => '>'
+      case -3 => '*'
+      case 11 => 'a'
+      case 12 => 'r'
+      case 13 => 'n'
+      case 14 => 'v'
+      case 15 => 'p'
+      case 16 => 'm'
+      case 17 => 'g'
+      case 18 => 'b'
     }
   }
   
