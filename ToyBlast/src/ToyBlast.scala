@@ -1,10 +1,12 @@
 import util.Random
 import java.io._
+import scala.io.StdIn._
 
 object ToyBlast {
   
   def main(args: Array[String]){
-    val dif = readInt
+    println("Nivel de dificultad?")
+    val dif = readInt()
     
   	val juego = jugar(dif)
   
@@ -37,14 +39,14 @@ object ToyBlast {
   
   //da igual como borremos, asi que borramos por filas
   def borradoTabx(lista:List[Int], actuarl:List[Boolean], stats:List[Int]): (List[Int], List[Int])={// se encarga de las filas borra los que estén a true en actuarl
-  	if (lista.isEmpty) (Nil, stats)
-  	else if (actuarl.head) {
-  		val a1 = borradoTabx(lista.tail, actuarl.tail, sumaStats(lista.head, stats))
-  		(0::a1._1, a1._2)
-  	} else {
-  		val a2 = borradoTabx(lista.tail, actuarl.tail, stats)
-  		(lista.head::a2._1, a2._2)
-  	}
+        if (lista.isEmpty) (Nil, stats)
+        else {if (actuarl.head) {
+                val a1 = borradoTabx(lista.tail, actuarl.tail, sumaStats(lista.head, stats))
+                (0::a1._1, a1._2)
+        } else {
+                val a2 = borradoTabx(lista.tail, actuarl.tail, stats)
+                (lista.head::a2._1, a2._2)
+        }}
   }                                               //> borradoTabx: (lista: List[Int], actuarl: List[Boolean], stats: List[Int])(L
                                                   //| ist[Int], List[Int])
   
@@ -875,9 +877,9 @@ imprimir(tableroBomba)
   	else {
   		imprimir(fichas, stats, tablero)
   		print("\nIntroduce la X: ")
-  		val x = readInt
+  		val x = readInt()
   		print("\nIntroduce la Y: ")
-  		val y = readInt
+  		val y = readInt()
   		
   		if (x<0 || x>6 || y<0 || y>8) {
   			println("\nERROR - Introduzca un ficha del rango del tablero\n")
