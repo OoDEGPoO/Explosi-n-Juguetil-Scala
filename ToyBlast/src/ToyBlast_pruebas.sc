@@ -1,9 +1,8 @@
+import util.Random
+import java.io._
+
 object ToyBlast {
   println("Welcome to the Scala workshit")        //> Welcome to the Scala workshit
-  
-  import util.Random
-  
-  val (r1)= (1+Random.nextInt(4))                 //> r1  : Int = 1
   
   def iniFichasNivel(n:Int, l:List[Int]): List[Int]={
   	val c:Int = (1+Random.nextInt(8)) //tomamos un color del 1 al 8
@@ -642,7 +641,7 @@ object ToyBlast {
   }                                               //> contarBorrarY: (l: List[Boolean])Int
   
   //borramos, comprobamos esto que pone la bomba y rellenamos despues haciendo que baje
-  def colocalBomba(x: Int, y: Int, tablero: List[List[Int]], actuar: List[List[Boolean]]): List[List[Int]] = {
+  def colocarBomba(x: Int, y: Int, tablero: List[List[Int]], actuar: List[List[Boolean]]): List[List[Int]] = {
 
     val borrar = contarBorrar(actuar)
 
@@ -665,7 +664,7 @@ object ToyBlast {
     } else {
       tablero
     }
-  }                                               //> colocalBomba: (x: Int, y: Int, tablero: List[List[Int]], actuar: List[List
+  }                                               //> colocarBomba: (x: Int, y: Int, tablero: List[List[Int]], actuar: List[List
                                                   //| [Boolean]])List[List[Int]]
   /*
   imprimir(tablero1)
@@ -681,11 +680,71 @@ imprimir(tableroBomba)
 
 	print("numero a borrar " + contarBorrar(salidaAux11))*/
 
-  def guardarPartida() = {
-  }                                               //> guardarPartida: ()Unit
+
+	/*def guardar ( tablero: List[List[Int]], fichas: List[Int], contador:List[Int]) {
+	printToFile(new File("tablero.txt")) { p =>
+	 tablero.foreach(p.println)
+	}
+	printToFile(new File("fichas.txt")) { p =>
+	 fichas.foreach(p.println)
+	}
+	printToFile(new File("contador.txt")) { p =>
+	 contador.foreach(p.println)
+	}
+	}
+	
+	def cargar(): (List[List[Int]], List[Int], List[Int])={ //tablero,  fichas, contador
+	    val bufferedSource = io.Source.fromFile("tablero.txt")
+	    val tablero= (for (line <- bufferedSource.getLines()) yield line).toList
+	    bufferedSource.close
+	
+			val bufferedSource = io.Source.fromFile("fichas.txt")
+	    val fichas= (for (line <- bufferedSource.getLines()) yield line).toList
+	    bufferedSource.close
+	
+			val bufferedSource = io.Source.fromFile("contador.txt")
+	    val contador= (for (line <- bufferedSource.getLines()) yield line).toList
+	    bufferedSource.close
+	
+	    (tablero, fichas, contador)
+	}*/
 
   def identificarPatrones() = {
   }                                               //> identificarPatrones: ()Unit
+  
+  def optimizacion(tablero:List[List[Int]], actuar:List[List[Boolean]]): List[Int]={
+	    optimizacionY(tablero.head.size, tablero.size, tablero, actuar)
+	}                                         //> optimizacion: (tablero: List[List[Int]], actuar: List[List[Boolean]])List[
+                                                  //| Int]
+	
+	def optimizacionY (x: Int, y:Int, tablero:List[List[Int]], actuar:List[List[Boolean]]):  List[Int]={
+	    if(y<0)
+	        List(0,x,y)
+	    else {
+	        val aux = optimizacionX(x, y, tablero.head, actuar)
+	        val aux2 = optimizacionY(x,y-1, tablero.tail, actuar)
+	        if(aux.head < aux2.head)
+	            aux2
+	        else
+	            aux
+	    }
+	}                                         //> optimizacionY: (x: Int, y: Int, tablero: List[List[Int]], actuar: List[Lis
+                                                  //| t[Boolean]])List[Int]
+	
+	def optimizacionX(x:Int, y:Int, lista:List[Int], actuar:List[List[Boolean]]): List[Int] ={
+	    if (x<0)
+	        List(0,x,y)
+	    else {
+	        val aux = List(1,x,y)//contarBorrar(seleccionarficha(x, y, lista, actuar))
+	        val aux2 = optimizacionX(x-1, y, lista, actuar)
+	        if(aux.head < aux2.head)
+	            aux2
+	        else
+	            aux
+	
+	    }
+	}                                         //> optimizacionX: (x: Int, y: Int, lista: List[Int], actuar: List[List[Boolea
+                                                  //| n]])List[Int]
 
   def estadisticas() = {
   }                                               //> estadisticas: ()Unit
@@ -809,9 +868,9 @@ imprimir(tableroBomba)
   	else {
   		imprimir(fichas, stats, tablero)
   		print("\nIntroduce la X: ")
-  		val x = readInt()
+  		val x = readInt
   		print("\nIntroduce la Y: ")
-  		val y = readInt()
+  		val y = readInt
   		
   		if (x<0 || x>6 || y<0 || y>8) {
   			println("\nERROR - Introduzca un ficha del rango del tablero\n")
@@ -819,8 +878,9 @@ imprimir(tableroBomba)
   		} else {
   			val actAux = seleccionarFicha(x, y, tablero, act1)
   			val borrado = borradoTab(tablero, actAux, stats)
-  			imprimir(fichas, borrado._2, borrado._1)
-  			val relleno = rellenarN3(borrado._1, fichas)
+  			val newTab = colocarBomba(x, y, borrado._1, actAux)
+  			imprimir(fichas, borrado._2, newTab)
+  			val relleno = rellenarN3(newTab, fichas)
   			
   			contarBorrar(actAux)+juegoN3(c+1, fichas, relleno, borrado._2)
   		}
@@ -838,7 +898,7 @@ imprimir(tableroBomba)
   	}
   }                                               //> jugar: (nivel: Int)Int
   
-  val dif = readInt()
+  val dif = readInt
   
 	val juego = jugar(dif)
 

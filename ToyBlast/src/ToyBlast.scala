@@ -1,8 +1,15 @@
 import util.Random
 import java.io._
 
-object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(97); 
-  println("Welcome to the Scala workshit");$skip(268); 
+object ToyBlast {
+  
+  def main(args: Array[String]){
+    val dif = readInt
+    
+  	val juego = jugar(dif)
+  
+  	println("\n\nPuntuación Final: " + juego)
+  }
   
   def iniFichasNivel(n:Int, l:List[Int]): List[Int]={
   	val c:Int = (1+Random.nextInt(8)) //tomamos un color del 1 al 8
@@ -11,22 +18,22 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   	else
   		if (l.contains(c)) iniFichasNivel(n, l)
   		else iniFichasNivel(n-1, laux)
-  };System.out.println("""iniFichasNivel: (n: Int, l: List[Int])List[Int]""");$skip(165); 
+  }                                               //> iniFichasNivel: (n: Int, l: List[Int])List[Int]
   
   def iniTablerox(x:Int, n:Int, fichas:List[Int]): List[Int]={
   	if (x == 0) Nil
   	else iniTablerox(x-1, n, fichas):::fichas.apply(Random.nextInt(n))::Nil
-  };System.out.println("""iniTablerox: (x: Int, n: Int, fichas: List[Int])List[Int]""");$skip(173); 
+  }                                               //> iniTablerox: (x: Int, n: Int, fichas: List[Int])List[Int]
   
   def iniTablero(x:Int, y:Int, n:Int, fichas:List[Int]): List[List[Int]]={
   	if (y == 0) Nil
   	else iniTablero(x, y-1, n, fichas):::iniTablerox(x, n, fichas)::Nil
-  };System.out.println("""iniTablero: (x: Int, y: Int, n: Int, fichas: List[Int])List[List[Int]]""");$skip(166); 
+  }                                               //> iniTablero: (x: Int, y: Int, n: Int, fichas: List[Int])List[List[Int]]
   
   def sumaStats(v:Int, stats:List[Int]): List[Int]={
   	if (v==stats.size) stats.init:::List(stats.last+1)
   	else sumaStats(v, stats.init):::List(stats.last)
-  };System.out.println("""sumaStats: (v: Int, stats: List[Int])List[Int]""");$skip(500); 
+  }                                               //> sumaStats: (v: Int, stats: List[Int])List[Int]
   
   //da igual como borremos, asi que borramos por filas
   def borradoTabx(lista:List[Int], actuarl:List[Boolean], stats:List[Int]): (List[Int], List[Int])={// se encarga de las filas borra los que estén a true en actuarl
@@ -38,7 +45,8 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   		val a2 = borradoTabx(lista.tail, actuarl.tail, stats)
   		(lista.head::a2._1, a2._2)
   	}
-  };System.out.println("""borradoTabx: (lista: List[Int], actuarl: List[Boolean], stats: List[Int])(List[Int], List[Int])""");$skip(336); 
+  }                                               //> borradoTabx: (lista: List[Int], actuarl: List[Boolean], stats: List[Int])(L
+                                                  //| ist[Int], List[Int])
   
   def borradoTab(tablero:List[List[Int]], actuar:List[List[Boolean]], stats:List[Int]): (List[List[Int]], List[Int])={
   	if (tablero.isEmpty) (Nil, stats)
@@ -47,43 +55,44 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   		val auxB = borradoTab(tablero.tail, actuar.tail, auxBx._2)
   		(auxBx._1::auxB._1, auxB._2)
   	}
-  };System.out.println("""borradoTab: (tablero: List[List[Int]], actuar: List[List[Boolean]], stats: List[Int])(List[List[Int]], List[Int])""");$skip(67); 
+  }                                               //> borradoTab: (tablero: List[List[Int]], actuar: List[List[Boolean]], stats: 
+                                                  //| List[Int])(List[List[Int]], List[Int])
   
   def iniFichasN1(): List[Int]={
   	iniFichasNivel(4, Nil)
-  };System.out.println("""iniFichasN1: ()List[Int]""");$skip(67); 
+  }                                               //> iniFichasN1: ()List[Int]
   
   def iniFichasN2(): List[Int]={
   	iniFichasNivel(5, Nil)
-  };System.out.println("""iniFichasN2: ()List[Int]""");$skip(67); 
+  }                                               //> iniFichasN2: ()List[Int]
   
   def iniFichasN3(): List[Int]={
   	iniFichasNivel(6, Nil)
-  };System.out.println("""iniFichasN3: ()List[Int]""");$skip(95); 
+  }                                               //> iniFichasN3: ()List[Int]
   
   def iniTableroN1(fichas:List[Int]): List[List[Int]]={
   	iniTablero(7, 9, 4, fichas)
-  };System.out.println("""iniTableroN1: (fichas: List[Int])List[List[Int]]""");$skip(97); 
+  }                                               //> iniTableroN1: (fichas: List[Int])List[List[Int]]
   
   def iniTableroN2(fichas:List[Int]): List[List[Int]]={
   	iniTablero(11, 17, 5, fichas)
-  };System.out.println("""iniTableroN2: (fichas: List[Int])List[List[Int]]""");$skip(97); 
+  }                                               //> iniTableroN2: (fichas: List[Int])List[List[Int]]
   
   def iniTableroN3(fichas:List[Int]): List[List[Int]]={
   	iniTablero(15, 27, 6, fichas)
-  };System.out.println("""iniTableroN3: (fichas: List[Int])List[List[Int]]""");$skip(88); 
+  }                                               //> iniTableroN3: (fichas: List[Int])List[List[Int]]
   
   def iniActuarN1(): List[List[Boolean]]={
   	List.fill(9)(List.fill(7)(false))
-  };System.out.println("""iniActuarN1: ()List[List[Boolean]]""");$skip(90); 
+  }                                               //> iniActuarN1: ()List[List[Boolean]]
   
   def iniActuarN2(): List[List[Boolean]]={
   	List.fill(17)(List.fill(11)(false))
-  };System.out.println("""iniActuarN2: ()List[List[Boolean]]""");$skip(90); 
+  }                                               //> iniActuarN2: ()List[List[Boolean]]
   
   def iniActuarN3(): List[List[Boolean]]={
   	List.fill(27)(List.fill(15)(false))
-  };System.out.println("""iniActuarN3: ()List[List[Boolean]]""");$skip(292); 
+  }                                               //> iniActuarN3: ()List[List[Boolean]]
   
   //Adaptación de setPosicionBool para enteros
   
@@ -91,7 +100,8 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
     if (tablero.isEmpty || x<0 || y<0 || y>=tablero.size || x>=tablero.head.size) {
     	tablero
     } else setPosicionYInt(v, x, y, tablero)
-  };System.out.println("""setPosicionInt: (v: Int, x: Int, y: Int, tablero: List[List[Int]])List[List[Int]]""");$skip(346); 
+  }                                               //> setPosicionInt: (v: Int, x: Int, y: Int, tablero: List[List[Int]])List[List
+                                                  //| [Int]]
   
   def setPosicionYInt(v:Int, x: Int, y:Int, tablero: List[List[Int]]): List[List[Int]] = {
     if (tablero.isEmpty) { //si no hay tablero
@@ -103,7 +113,8 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
         tablero.head :: setPosicionYInt(v, x, y - 1, tablero.tail)
       }
     }
-  };System.out.println("""setPosicionYInt: (v: Int, x: Int, y: Int, tablero: List[List[Int]])List[List[Int]]""");$skip(204); 
+  }                                               //> setPosicionYInt: (v: Int, x: Int, y: Int, tablero: List[List[Int]])List[Lis
+                                                  //| t[Int]]
 
   def setPosicionXInt(v:Int, x: Int, fila: List[Int]): List[Int] = {
       if (x == 0) {
@@ -112,7 +123,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
        fila.head :: setPosicionXInt(v, x - 1, fila.tail)
       }
     
-  };System.out.println("""setPosicionXInt: (v: Int, x: Int, fila: List[Int])List[Int]""");$skip(562); 
+  }                                               //> setPosicionXInt: (v: Int, x: Int, fila: List[Int])List[Int]
   
   /*def tomaColumna(x:Int, y:Int, tablero:List[List[Int]]): List[Int]={
   	if (x<0 || y<0 || tablero.isEmpty) Nil
@@ -128,7 +139,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   			tomaColumna(x, y-1, tablero.init):::List(tablero.last.apply(x))
   		}
   	}
-  };System.out.println("""tomaColumna: (x: Int, y: Int, tablero: List[List[Int]])List[Int]""");$skip(781); 
+  }                                               //> tomaColumna: (x: Int, y: Int, tablero: List[List[Int]])List[Int]
    
   /*def tomaFicha(y:Int, columna:List[Int]): List[Int]={//toma la primera ficha mayor que 0 que encuentre antes del nivel 0
   	if (y<0 || columna.isEmpty) {print("\nfin columna")
@@ -149,7 +160,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   		//println("--y" + y + "= " + columna.last)																					//Borrar
   		List(columna.last, y)
   	}
-  };System.out.println("""tomaFicha: (y: Int, columna: List[Int])List[Int]""");$skip(911); 
+  }                                               //> tomaFicha: (y: Int, columna: List[Int])List[Int]
   
   def rellenaColumnas(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={
   	//print("-x" + x + "-\n")																					//Borrar
@@ -164,7 +175,8 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   			} else {//print("\n Cambio " + y + " con " + tablero.apply(y).apply(x) + " por " + tomada.last + " con " +  + tomada.head + "\n")																					//Borrar
   			rellenaColumnas(x, y-1, setPosicionInt(tomada.head, x, y, setPosicionInt(0, x, tomada.last, tablero)), f, fichas)}
   		} else rellenaColumnas(x, y-1, tablero, f, fichas)
-  };System.out.println("""rellenaColumnas: (x: Int, y: Int, tablero: List[List[Int]], f: Int, fichas: List[Int])List[List[Int]]""");$skip(535); 
+  }                                               //> rellenaColumnas: (x: Int, y: Int, tablero: List[List[Int]], f: Int, fichas:
+                                                  //|  List[Int])List[List[Int]]
   
   /*def rellenaColumnas2(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={
   	val c = tomaColumna2(x)
@@ -175,7 +187,8 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   	val r = fichas.apply(Random.nextInt(f))
   	if (y<0 || x<0) tablero
   	else rellenaColumnasOptRand(x, y-1, setPosicionInt(r,x,y,tablero), f, fichas)
-  };System.out.println("""rellenaColumnasOptRand: (x: Int, y: Int, tablero: List[List[Int]], f: Int, fichas: List[Int])List[List[Int]]""");$skip(948); 
+  }                                               //> rellenaColumnasOptRand: (x: Int, y: Int, tablero: List[List[Int]], f: Int, 
+                                                  //| fichas: List[Int])List[List[Int]]
   
   def rellenaColumnasOpt(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={//Optimizado
   	//print("-x" + x + "-\n")																					//Borrar
@@ -190,24 +203,26 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   			rellenaColumnasOpt(x, y-1, setPosicionInt(tomada.head,x,y,setPosicionInt(0, x, tomada.last, tablero)), f, fichas)
   			}
   		} else rellenaColumnasOpt(x, y-1, tablero, f, fichas)
-  };System.out.println("""rellenaColumnasOpt: (x: Int, y: Int, tablero: List[List[Int]], f: Int, fichas: List[Int])List[List[Int]]""");$skip(208); 
+  }                                               //> rellenaColumnasOpt: (x: Int, y: Int, tablero: List[List[Int]], f: Int, fich
+                                                  //| as: List[Int])List[List[Int]]
   
   def rellenar(x:Int, ly:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={
   	if (x<0) tablero
   	else rellenar(x-1, ly, rellenaColumnas(x, ly, tablero, f, fichas), f, fichas)
-  };System.out.println("""rellenar: (x: Int, ly: Int, tablero: List[List[Int]], f: Int, fichas: List[Int])List[List[Int]]""");$skip(125); 
+  }                                               //> rellenar: (x: Int, ly: Int, tablero: List[List[Int]], f: Int, fichas: List[
+                                                  //| Int])List[List[Int]]
   
   def rellenarN1(tablero:List[List[Int]], fichas:List[Int]): List[List[Int]]={
   	rellenar(6, 8, tablero, 4, fichas)
-  };System.out.println("""rellenarN1: (tablero: List[List[Int]], fichas: List[Int])List[List[Int]]""");$skip(127); 
+  }                                               //> rellenarN1: (tablero: List[List[Int]], fichas: List[Int])List[List[Int]]
   
   def rellenarN2(tablero:List[List[Int]], fichas:List[Int]): List[List[Int]]={
   	rellenar(10, 16, tablero, 5, fichas)
-  };System.out.println("""rellenarN2: (tablero: List[List[Int]], fichas: List[Int])List[List[Int]]""");$skip(127); 
+  }                                               //> rellenarN2: (tablero: List[List[Int]], fichas: List[Int])List[List[Int]]
   
   def rellenarN3(tablero:List[List[Int]], fichas:List[Int]): List[List[Int]]={
   	rellenar(14, 26, tablero, 6, fichas)
-  };System.out.println("""rellenarN3: (tablero: List[List[Int]], fichas: List[Int])List[List[Int]]""");$skip(1091); 
+  }                                               //> rellenarN3: (tablero: List[List[Int]], fichas: List[Int])List[List[Int]]
   
   /*val fichas1 = iniFichasN1()
   val tablero1 = iniTableroN1(fichas1)
@@ -239,7 +254,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   def getPosicion(x: Int, y: Int, tablero: List[List[Int]]): Int = {
     val laux: List[Int] = getPosicionY(y, tablero)
     getPosicionX(x, laux)
-  };System.out.println("""getPosicion: (x: Int, y: Int, tablero: List[List[Int]])Int""");$skip(310); 
+  }                                               //> getPosicion: (x: Int, y: Int, tablero: List[List[Int]])Int
  //y tiene lista de listas
  //x tiene lista de enteros
   def getPosicionY(y: Int, tablero: List[List[Int]]): List[Int] = {
@@ -252,7 +267,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
         getPosicionY(y - 1, tablero.tail)
       }
     }
-  };System.out.println("""getPosicionY: (y: Int, tablero: List[List[Int]])List[Int]""");$skip(231); 
+  }                                               //> getPosicionY: (y: Int, tablero: List[List[Int]])List[Int]
 
   def getPosicionX(x: Int, fila: List[Int]): Int = {
     if (fila.isEmpty) { //si no hay tablero
@@ -264,7 +279,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
         getPosicionX(x - 1, fila.tail)
       }
     }
-  };System.out.println("""getPosicionX: (x: Int, fila: List[Int])Int""");$skip(280); 
+  }                                               //> getPosicionX: (x: Int, fila: List[Int])Int
 
   //getPosicionY(1, tablero3)
   //getPosicion(1, 7, tablero3)
@@ -274,7 +289,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   def getPosicionBool(x: Int, y: Int, tablero: List[List[Boolean]]): Boolean = {
     val laux: List[Boolean] = getPosicionYBool(y, tablero)
     getPosicionXBool(x, laux)
-  };System.out.println("""getPosicionBool: (x: Int, y: Int, tablero: List[List[Boolean]])Boolean""");$skip(273); 
+  }                                               //> getPosicionBool: (x: Int, y: Int, tablero: List[List[Boolean]])Boolean
 
   def getPosicionYBool(y: Int, tablero: List[List[Boolean]]): List[Boolean] = {
     if (tablero.isEmpty) { //si no hay tablero
@@ -286,7 +301,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
         getPosicionYBool(y - 1, tablero.tail)
       }
     }
-  };System.out.println("""getPosicionYBool: (y: Int, tablero: List[List[Boolean]])List[Boolean]""");$skip(250); 
+  }                                               //> getPosicionYBool: (y: Int, tablero: List[List[Boolean]])List[Boolean]
 
   def getPosicionXBool(x: Int, fila: List[Boolean]): Boolean = {
     if (fila.isEmpty) { //si no hay tablero
@@ -298,7 +313,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
         getPosicionXBool(x - 1, fila.tail)
       }
     }
-  };System.out.println("""getPosicionXBool: (x: Int, fila: List[Boolean])Boolean""");$skip(374); 
+  }                                               //> getPosicionXBool: (x: Int, fila: List[Boolean])Boolean
 
   //getPosicionY(1, tablero3)
   //getPosicion(1, 7, tablero3)
@@ -309,7 +324,8 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
     if (tablero.isEmpty || x<0 || y<0 || y>=tablero.size || x>=tablero.head.size) {
     	tablero
     } else setPosicionYBool(v, x, y, tablero)
-  };System.out.println("""setPosicionBool: (v: Boolean, x: Int, y: Int, tablero: List[List[Boolean]])List[List[Boolean]]""");$skip(361); 
+  }                                               //> setPosicionBool: (v: Boolean, x: Int, y: Int, tablero: List[List[Boolean]]
+                                                  //| )List[List[Boolean]]
   
   def setPosicionYBool(v:Boolean, x: Int, y:Int, tablero: List[List[Boolean]]): List[List[Boolean]] = {
     if (tablero.isEmpty) { //si no hay tablero
@@ -321,7 +337,8 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
         tablero.head :: setPosicionYBool(v, x, y - 1, tablero.tail)
       }
     }
-  };System.out.println("""setPosicionYBool: (v: Boolean, x: Int, y: Int, tablero: List[List[Boolean]])List[List[Boolean]]""");$skip(264); 
+  }                                               //> setPosicionYBool: (v: Boolean, x: Int, y: Int, tablero: List[List[Boolean]
+                                                  //| ])List[List[Boolean]]
 
   def setPosicionXBool(v:Boolean, x: Int, fila: List[Boolean]): List[Boolean] = {
   	if (fila.isEmpty) {
@@ -333,14 +350,15 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
 	       fila.head :: setPosicionXBool(v, x - 1, fila.tail)
 	      }
   	}
-  };System.out.println("""setPosicionXBool: (v: Boolean, x: Int, fila: List[Boolean])List[Boolean]""");$skip(155); 
+  }                                               //> setPosicionXBool: (v: Boolean, x: Int, fila: List[Boolean])List[Boolean]
   
  
  
  //Bomba horizontal
  def setFilaBool(v:Boolean, y: Int, actuar: List[List[Boolean]]): List[List[Boolean]] = {
     setFilaBoolY(v, y, actuar)
-  };System.out.println("""setFilaBool: (v: Boolean, y: Int, actuar: List[List[Boolean]])List[List[Boolean]]""");$skip(358); 
+  }                                               //> setFilaBool: (v: Boolean, y: Int, actuar: List[List[Boolean]])List[List[Bo
+                                                  //| olean]]
   
   def setFilaBoolY(v:Boolean, y: Int, actuar: List[List[Boolean]]): List[List[Boolean]] = {//recorre buscando la fila y
     if (actuar.isEmpty) { //si no hay tablero
@@ -352,7 +370,8 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
         actuar.head :: setFilaBoolY(v, y - 1, actuar.tail)
       }
     }
-  };System.out.println("""setFilaBoolY: (v: Boolean, y: Int, actuar: List[List[Boolean]])List[List[Boolean]]""");$skip(200); 
+  }                                               //> setFilaBoolY: (v: Boolean, y: Int, actuar: List[List[Boolean]])List[List[B
+                                                  //| oolean]]
 
   def setFilaBoolX(v:Boolean, fila: List[Boolean]): List[Boolean] = {//pone la fila a v
       if (fila.isEmpty) {
@@ -361,12 +380,13 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
        v :: setFilaBoolX(v, fila.tail)
       }
     
-  };System.out.println("""setFilaBoolX: (v: Boolean, fila: List[Boolean])List[Boolean]""");$skip(157); 
+  }                                               //> setFilaBoolX: (v: Boolean, fila: List[Boolean])List[Boolean]
   
   //bomba vertical
   def setColumnaBool(v:Boolean, x: Int, tablero: List[List[Boolean]]): List[List[Boolean]] = {
     setColumnaBoolY(v, x, tablero)
-  };System.out.println("""setColumnaBool: (v: Boolean, x: Int, tablero: List[List[Boolean]])List[List[Boolean]]""");$skip(267); 
+  }                                               //> setColumnaBool: (v: Boolean, x: Int, tablero: List[List[Boolean]])List[Lis
+                                                  //| t[Boolean]]
   
   def setColumnaBoolY(v:Boolean, x:Int, tablero: List[List[Boolean]]): List[List[Boolean]] = {//recorre todas las filas
     if (tablero.isEmpty) { //si no hay tablero
@@ -375,7 +395,8 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
         setColumnaBoolX(v, x, tablero.head) :: tablero.tail
 
     }
-  };System.out.println("""setColumnaBoolY: (v: Boolean, x: Int, tablero: List[List[Boolean]])List[List[Boolean]]""");$skip(257); 
+  }                                               //> setColumnaBoolY: (v: Boolean, x: Int, tablero: List[List[Boolean]])List[Li
+                                                  //| st[Boolean]]
 
   def setColumnaBoolX(v:Boolean, x: Int, fila: List[Boolean]): List[Boolean] = {//cambia el valor x de la fila pasa por v
       if (x == 0) {
@@ -384,7 +405,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
        fila.head :: setColumnaBoolX(v, x - 1, fila.tail)
       }
     
-  };System.out.println("""setColumnaBoolX: (v: Boolean, x: Int, fila: List[Boolean])List[Boolean]""");$skip(541); 
+  }                                               //> setColumnaBoolX: (v: Boolean, x: Int, fila: List[Boolean])List[Boolean]
   
   //TNT
   
@@ -400,7 +421,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
   	val aux8 = setPosicionBool(true, x, y-1, aux7)
   	aux8
   
-  };System.out.println("""tnt: (x: Int, y: Int, actuar: List[List[Boolean]])List[List[Boolean]]""");$skip(243); 
+  }                                               //> tnt: (x: Int, y: Int, actuar: List[List[Boolean]])List[List[Boolean]]
   
    def rompecabezas(color: Int, tablero: List[List[Int]]): List[List[Boolean]] = {
     if (tablero.isEmpty) { //si no hay tablero
@@ -408,7 +429,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
     } else {
     	rompecabezasY(color, tablero.head)::rompecabezas(color, tablero.tail)
     }
-  };System.out.println("""rompecabezas: (color: Int, tablero: List[List[Int]])List[List[Boolean]]""");$skip(288); 
+  }                                               //> rompecabezas: (color: Int, tablero: List[List[Int]])List[List[Boolean]]
 
   def rompecabezasY(color:Int, fila: List[Int]): List[Boolean] ={
     if (fila.isEmpty) { //si no hay tablero
@@ -420,7 +441,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
     			false::rompecabezasY(color, fila.tail)
     	}
     }
-  };System.out.println("""rompecabezasY: (color: Int, fila: List[Int])List[Boolean]""");$skip(1912); 
+  }                                               //> rompecabezasY: (color: Int, fila: List[Int])List[Boolean]
 
   
 
@@ -473,7 +494,8 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
 
     laux4
     }
-  };System.out.println("""seleccionarFicha: (x: Int, y: Int, tablero: List[List[Int]], actuar: List[List[Boolean]])List[List[Boolean]]""");$skip(1336); 
+  }                                               //> seleccionarFicha: (x: Int, y: Int, tablero: List[List[Int]], actuar: List[
+                                                  //| List[Boolean]])List[List[Boolean]]
 
   def seleccionarFichaAux(x: Int, y: Int, tablero: List[List[Int]], actuar: List[List[Boolean]]): List[List[Boolean]] = {
     //TRUEEEEEEEE
@@ -509,14 +531,16 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
       }
 
     laux4
-  };System.out.println("""seleccionarFichaAux: (x: Int, y: Int, tablero: List[List[Int]], actuar: List[List[Boolean]])List[List[Boolean]]""");$skip(236); 
+  }                                               //> seleccionarFichaAux: (x: Int, y: Int, tablero: List[List[Int]], actuar: Li
+                                                  //| st[List[Boolean]])List[List[Boolean]]
   
  def imprimir(fichas:List[Int], stats:List[Int], tablero:List[List[Int]]){
  		if (!tablero.isEmpty){
  			print("  - ")
  			imprimirContadores(fichas, stats)+imprimirCabecera(0, tablero.head.size)+imprimirTablero(0, tablero)
  		}
- };System.out.println("""imprimir: (fichas: List[Int], stats: List[Int], tablero: List[List[Int]])Unit""");$skip(155); 
+ }                                                //> imprimir: (fichas: List[Int], stats: List[Int], tablero: List[List[Int]])U
+                                                  //| nit
   
  def imprimirCabecera(c:Int, l:Int): Int={
  		if (c==l){
@@ -526,7 +550,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
  			print(c + "  ")
  			imprimirCabecera(c+1, l)
  		}
- };System.out.println("""imprimirCabecera: (c: Int, l: Int)Int""");$skip(244); 
+ }                                                //> imprimirCabecera: (c: Int, l: Int)Int
   
  def imprimirTablero(c:Int, tablero: List[List[Int]]): Int = {
     if (tablero.isEmpty) { //si no hay tablero
@@ -536,7 +560,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
     	imprimirTableroY(tablero.head)
     	imprimirTablero(c+1, tablero.tail)
     }
-  };System.out.println("""imprimirTablero: (c: Int, tablero: List[List[Int]])Int""");$skip(218); 
+  }                                               //> imprimirTablero: (c: Int, tablero: List[List[Int]])Int
 
   def imprimirTableroY(fila: List[Int]): Int ={
     if (fila.isEmpty) { //si no hay tablero
@@ -546,7 +570,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
     	print(colocarColores(fila.head) + "  ")
     	imprimirTableroY(fila.tail)
     }
-  };System.out.println("""imprimirTableroY: (fila: List[Int])Int""");$skip(523); 
+  }                                               //> imprimirTableroY: (fila: List[Int])Int
   
     //cambiamos los numeros por colores
   def colocarColores(color: Int): Char ={
@@ -572,7 +596,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
       case 17 => 'g'
       case 18 => 'b'
     }
-  };System.out.println("""colocarColores: (color: Int)Char""");$skip(341); 
+  }                                               //> colocarColores: (color: Int)Char
   
   def imprimirContadores(fichas: List[Int], contador:List[Int]): Int={
         if (fichas.isEmpty){
@@ -582,7 +606,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
              print( "Fichas de color " + colocarColores(aux) + " = "+getPosicionX(aux, contador))
              imprimirContadores(fichas.tail, contador)
          }
- 	};System.out.println("""imprimirContadores: (fichas: List[Int], contador: List[Int])Int""");$skip(228); 
+ 	}                                         //> imprimirContadores: (fichas: List[Int], contador: List[Int])Int
   
    def imprimirTableroBool(tablero: List[List[Boolean]]): Int = {
     if (tablero.isEmpty) { //si no hay tablero
@@ -591,7 +615,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
     	imprimirTableroYBool(tablero.head)
     	imprimirTableroBool(tablero.tail)
     }
-  };System.out.println("""imprimirTableroBool: (tablero: List[List[Boolean]])Int""");$skip(214); 
+  }                                               //> imprimirTableroBool: (tablero: List[List[Boolean]])Int
 
   def imprimirTableroYBool(fila: List[Boolean]): Int ={
     if (fila.isEmpty) { //si no hay tablero
@@ -601,7 +625,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
     	print(fila.head + "  ")
     	imprimirTableroYBool(fila.tail)
     }
-  };System.out.println("""imprimirTableroYBool: (fila: List[Boolean])Int""");$skip(179); 
+  }                                               //> imprimirTableroYBool: (fila: List[Boolean])Int
   
    def contarBorrar(l: List[List[Boolean]]): Int = {
     if (l.isEmpty) { //si no hay tablero
@@ -609,7 +633,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
     } else {
     	contarBorrarY(l.head) + contarBorrar(l.tail)
     }
-  };System.out.println("""contarBorrar: (l: List[List[Boolean]])Int""");$skip(213); 
+  }                                               //> contarBorrar: (l: List[List[Boolean]])Int
 
   def contarBorrarY(l: List[Boolean]): Int ={
     if (l.isEmpty) { //si no hay tablero
@@ -621,7 +645,7 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
     
     	sumar + contarBorrarY(l.tail)
     }
-  };System.out.println("""contarBorrarY: (l: List[Boolean])Int""");$skip(769); 
+  }                                               //> contarBorrarY: (l: List[Boolean])Int
   
   //borramos, comprobamos esto que pone la bomba y rellenamos despues haciendo que baje
   def colocarBomba(x: Int, y: Int, tablero: List[List[Int]], actuar: List[List[Boolean]]): List[List[Int]] = {
@@ -647,7 +671,8 @@ object ToyBlast {;import org.scalaide.worksheet.runtime.library.WorksheetSupport
     } else {
       tablero
     }
-  };System.out.println("""colocarBomba: (x: Int, y: Int, tablero: List[List[Int]], actuar: List[List[Boolean]])List[List[Int]]""");$skip(1329); 
+  }                                               //> colocarBomba: (x: Int, y: Int, tablero: List[List[Int]], actuar: List[List
+                                                  //| [Boolean]])List[List[Int]]
   /*
   imprimir(tablero1)
   imprimirTableroBool(act1)
@@ -692,11 +717,12 @@ imprimir(tableroBomba)
 	}*/
 
   def identificarPatrones() = {
-  };System.out.println("""identificarPatrones: ()Unit""");$skip(160); 
+  }                                               //> identificarPatrones: ()Unit
   
   def optimizacion(tablero:List[List[Int]], actuar:List[List[Boolean]]): List[Int]={
 	    optimizacionY(tablero.head.size, tablero.size, tablero, actuar)
-	};System.out.println("""optimizacion: (tablero: List[List[Int]], actuar: List[List[Boolean]])List[Int]""");$skip(367); 
+	}                                         //> optimizacion: (tablero: List[List[Int]], actuar: List[List[Boolean]])List[
+                                                  //| Int]
 	
 	def optimizacionY (x: Int, y:Int, tablero:List[List[Int]], actuar:List[List[Boolean]]):  List[Int]={
 	    if(y<0)
@@ -709,7 +735,8 @@ imprimir(tableroBomba)
 	        else
 	            aux
 	    }
-	};System.out.println("""optimizacionY: (x: Int, y: Int, tablero: List[List[Int]], actuar: List[List[Boolean]])List[Int]""");$skip(377); 
+	}                                         //> optimizacionY: (x: Int, y: Int, tablero: List[List[Int]], actuar: List[Lis
+                                                  //| t[Boolean]])List[Int]
 	
 	def optimizacionX(x:Int, y:Int, lista:List[Int], actuar:List[List[Boolean]]): List[Int] ={
 	    if (x<0)
@@ -723,14 +750,48 @@ imprimir(tableroBomba)
 	            aux
 	
 	    }
-	};System.out.println("""optimizacionX: (x: Int, y: Int, lista: List[Int], actuar: List[List[Boolean]])List[Int]""");$skip(31); 
+	}                                         //> optimizacionX: (x: Int, y: Int, lista: List[Int], actuar: List[List[Boolea
+                                                  //| n]])List[Int]
 
   def estadisticas() = {
-  };System.out.println("""estadisticas: ()Unit""");$skip(30); 
+  }                                               //> estadisticas: ()Unit
   
-  val act1 = iniActuarN1();System.out.println("""act1  : List[List[Boolean]] = """ + $show(act1 ));$skip(27); 
-  val act2 = iniActuarN2();System.out.println("""act2  : List[List[Boolean]] = """ + $show(act2 ));$skip(27); 
-  val act3 = iniActuarN3();System.out.println("""act3  : List[List[Boolean]] = """ + $show(act3 ));$skip(179); 
+  val act1 = iniActuarN1()                        //> act1  : List[List[Boolean]] = List(List(false, false, false, false, false,
+                                                  //|  false, false), List(false, false, false, false, false, false, false), Lis
+                                                  //| t(false, false, false, false, false, false, false), List(false, false, fal
+                                                  //| se, false, false, false, false), List(false, false, false, false, false, f
+                                                  //| alse, false), List(false, false, false, false, false, false, false), List(
+                                                  //| false, false, false, false, false, false, false), List(false, false, false
+                                                  //| , false, false, false, false), List(false, false, false, false, false, fal
+                                                  //| se, false))
+  val act2 = iniActuarN2()                        //> act2  : List[List[Boolean]] = List(List(false, false, false, false, false,
+                                                  //|  false, false, false, false, false, false), List(false, false, false, fals
+                                                  //| e, false, false, false, false, false, false, false), List(false, false, fa
+                                                  //| lse, false, false, false, false, false, false, false, false), List(false, 
+                                                  //| false, false, false, false, false, false, false, false, false, false), Lis
+                                                  //| t(false, false, false, false, false, false, false, false, false, false, fa
+                                                  //| lse), List(false, false, false, false, false, false, false, false, false, 
+                                                  //| false, false), List(false, false, false, false, false, false, false, false
+                                                  //| , false, false, false), List(false, false, false, false, false, false, fal
+                                                  //| se, false, false, false, false), List(false, false, false, false, false, f
+                                                  //| alse, false, false, false, false, false), List(false, false, false, false,
+                                                  //|  false, false, false, false, false, false, false), List(false, false, fals
+                                                  //| e, false, false, false
+                                                  //| Output exceeds cutoff limit.
+  val act3 = iniActuarN3()                        //> act3  : List[List[Boolean]] = List(List(false, false, false, false, false,
+                                                  //|  false, false, false, false, false, false, false, false, false, false), Li
+                                                  //| st(false, false, false, false, false, false, false, false, false, false, f
+                                                  //| alse, false, false, false, false), List(false, false, false, false, false,
+                                                  //|  false, false, false, false, false, false, false, false, false, false), Li
+                                                  //| st(false, false, false, false, false, false, false, false, false, false, f
+                                                  //| alse, false, false, false, false), List(false, false, false, false, false,
+                                                  //|  false, false, false, false, false, false, false, false, false, false), Li
+                                                  //| st(false, false, false, false, false, false, false, false, false, false, f
+                                                  //| alse, false, false, false, false), List(false, false, false, false, false,
+                                                  //|  false, false, false, false, false, false, false, false, false, false), Li
+                                                  //| st(false, false, false, false, false, false, false, false, false, false, f
+                                                  //| alse, false, false, fa
+                                                  //| Output exceeds cutoff limit.
   
   def checkN1(c:Int, stats:List[Int]): Boolean={
   	if (stats.isEmpty) c==4
@@ -738,7 +799,7 @@ imprimir(tableroBomba)
   		if (stats.head>=20) checkN1(c+1, stats.tail)
   		else checkN1(c, stats.tail)
   	}
-  };System.out.println("""checkN1: (c: Int, stats: List[Int])Boolean""");$skip(179); 
+  }                                               //> checkN1: (c: Int, stats: List[Int])Boolean
   
   def checkN2(c:Int, stats:List[Int]): Boolean={
   	if (stats.isEmpty) c==5
@@ -746,7 +807,7 @@ imprimir(tableroBomba)
   		if (stats.head>=15) checkN2(c+1, stats.tail)
   		else checkN2(c, stats.tail)
   	}
-  };System.out.println("""checkN2: (c: Int, stats: List[Int])Boolean""");$skip(179); 
+  }                                               //> checkN2: (c: Int, stats: List[Int])Boolean
   
   def checkN3(c:Int, stats:List[Int]): Boolean={
   	if (stats.isEmpty) c==6
@@ -754,7 +815,7 @@ imprimir(tableroBomba)
   		if (stats.head>=10) checkN3(c+1, stats.tail)
   		else checkN3(c, stats.tail)
   	}
-  };System.out.println("""checkN3: (c: Int, stats: List[Int])Boolean""");$skip(893); 
+  }                                               //> checkN3: (c: Int, stats: List[Int])Boolean
   
   //--------------------------- juego -----------------------------------------
   
@@ -780,7 +841,8 @@ imprimir(tableroBomba)
   			contarBorrar(actAux)+juegoN1(c+1, fichas, relleno, borrado._2)
   		}
   	}
-  };System.out.println("""juegoN1: (c: Int, fichas: List[Int], tablero: List[List[Int]], stats: List[Int])Int""");$skip(812); 
+  }                                               //> juegoN1: (c: Int, fichas: List[Int], tablero: List[List[Int]], stats: List
+                                                  //| [Int])Int
   
     def juegoN2(c:Int, fichas:List[Int], tablero:List[List[Int]], stats:List[Int]): Int={
   	if (tablero.isEmpty) juegoN2(c, fichas, iniTableroN2(fichas), stats)
@@ -804,7 +866,8 @@ imprimir(tableroBomba)
   			contarBorrar(actAux)+juegoN2(c+1, fichas, relleno, borrado._2)
   		}
   	}
-  };System.out.println("""juegoN2: (c: Int, fichas: List[Int], tablero: List[List[Int]], stats: List[Int])Int""");$skip(857); 
+  }                                               //> juegoN2: (c: Int, fichas: List[Int], tablero: List[List[Int]], stats: List
+                                                  //| [Int])Int
   
     def juegoN3(c:Int, fichas:List[Int], tablero:List[List[Int]], stats:List[Int]): Int={
   	if (tablero.isEmpty) juegoN3(c, fichas, iniTableroN3(fichas), stats)
@@ -829,7 +892,8 @@ imprimir(tableroBomba)
   			contarBorrar(actAux)+juegoN3(c+1, fichas, relleno, borrado._2)
   		}
   	}
-  };System.out.println("""juegoN3: (c: Int, fichas: List[Int], tablero: List[List[Int]], stats: List[Int])Int""");$skip(327); 
+  }                                               //> juegoN3: (c: Int, fichas: List[Int], tablero: List[List[Int]], stats: List
+                                                  //| [Int])Int
   
   //---------------------------------------------------------------------------
   
@@ -839,11 +903,6 @@ imprimir(tableroBomba)
   		case 2 => juegoN2(0, iniFichasN2(), Nil, List.fill(8)(0))
 			case 3 => juegoN3(0, iniFichasN3(), Nil, List.fill(8)(0))
   	}
-  };System.out.println("""jugar: (nivel: Int)Int""");$skip(23); 
-  
-  val dif = readInt;System.out.println("""dif  : Int = """ + $show(dif ));$skip(27); 
-  
-	val juego = jugar(dif);System.out.println("""juego  : Int = """ + $show(juego ));$skip(45); 
+  }                                               //> jugar: (nivel: Int)Int
 
-	println("\n\nPuntuación Final: " + juego)}
 }
