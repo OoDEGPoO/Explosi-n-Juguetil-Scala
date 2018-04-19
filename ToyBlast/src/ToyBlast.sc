@@ -14,14 +14,14 @@ object ToyBlast {
   		else iniFichasNivel(n-1, laux)
   }
   
-  def iniTablerox(y:Int, n:Int, fichas:List[Int]): List[Int]={
-  	if (y == 0) Nil
-  	else iniTablerox(y-1, n, fichas):::fichas.apply(Random.nextInt(n))::Nil
+  def iniTablerox(x:Int, n:Int, fichas:List[Int]): List[Int]={
+  	if (x == 0) Nil
+  	else iniTablerox(x-1, n, fichas):::fichas.apply(Random.nextInt(n))::Nil
   }
   
   def iniTablero(x:Int, y:Int, n:Int, fichas:List[Int]): List[List[Int]]={
-  	if (x == 0) Nil
-  	else iniTablero(x-1, y, n, fichas):::iniTablerox(y, n, fichas)::Nil
+  	if (y == 0) Nil
+  	else iniTablero(x, y-1, n, fichas):::iniTablerox(x, n, fichas)::Nil
   }
   
   //da igual como borremos, asi que borramos por filas
@@ -61,40 +61,42 @@ object ToyBlast {
   }
   
   def iniActuarN1(): List[List[Boolean]]={
-  	List.fill(7)(List.fill(9)(false))
+  	List.fill(9)(List.fill(7)(false))
   }
   
   def iniActuarN2(): List[List[Boolean]]={
-  	List.fill(11)(List.fill(17)(false))
+  	List.fill(17)(List.fill(11)(false))
   }
   
   def iniActuarN3(): List[List[Boolean]]={
-  	List.fill(15)(List.fill(27)(false))
+  	List.fill(27)(List.fill(15)(false))
   }
   
   //Adaptación de setPosicionBool para enteros
   
   def setPosicionInt(v:Int, x: Int, y: Int, tablero: List[List[Int]]): List[List[Int]] = {
-    setPosicionXInt(v, x, y, tablero)
+    if (tablero.isEmpty || x<0 || y<0 || y>=tablero.size || x>=tablero.head.size) {
+    	tablero
+    } else setPosicionYInt(v, x, y, tablero)
   }
   
-  def setPosicionXInt(v:Int, x: Int, y:Int, tablero: List[List[Int]]): List[List[Int]] = {
+  def setPosicionYInt(v:Int, x: Int, y:Int, tablero: List[List[Int]]): List[List[Int]] = {
     if (tablero.isEmpty) { //si no hay tablero
       null
     } else {
-      if (x == 0) {
-        setPosicionYInt(v, y, tablero.head) :: tablero.tail
+      if (y == 0) {
+        setPosicionXInt(v, x, tablero.head) :: tablero.tail
       } else {
-        tablero.head :: setPosicionXInt(v, x - 1, y, tablero.tail)
+        tablero.head :: setPosicionYInt(v, x, y - 1, tablero.tail)
       }
     }
   }
 
-  def setPosicionYInt(v:Int, y: Int, fila: List[Int]): List[Int] = {
-      if (y == 0) {
+  def setPosicionXInt(v:Int, x: Int, fila: List[Int]): List[Int] = {
+      if (x == 0) {
         v :: fila.tail
       } else {
-       fila.head :: setPosicionYInt(v, y - 1, fila.tail)
+       fila.head :: setPosicionXInt(v, x - 1, fila.tail)
       }
     
   }
@@ -110,9 +112,11 @@ object ToyBlast {
   }
    
   def tomaFicha(y:Int, columna:List[Int]): List[Int]={//toma la primera ficha mayor que 0 que encuentre antes del nivel 0
-  	if (y<0 || columna.isEmpty) List(0, 0) // por seguridad
+  	if (y<0 || columna.isEmpty) {print("\nfin columna")
+  		List(0, 0)} // por seguridad
   	else if (columna.apply(y) == 0) tomaFicha(y-1, columna)
-  		else List(columna.apply(y), y)
+  		else {print("\nencontré una! - ", y)
+  			List(columna.apply(y), y)}
   }
   
   def tomaFicha2(y:Int, columna:List[Int]): List[Int]={
@@ -124,13 +128,13 @@ object ToyBlast {
   
   def rellenaColumnas(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={
   	val c = tomaColumna(x, tablero.length-1, tablero)
-  	val tomada = tomaFicha(y-1, c)
+  	val tomada = tomaFicha(y, c)
   	val r = fichas.apply(Random.nextInt(f))
   	if (y<0 || x<0) tablero
   	else
   		if (tablero.apply(y).apply(x) == 0)
-  			if (tomada.head == 0) rellenaColumnas(x, y-1, setPosicionInt(r,y,x,tablero), f, fichas)
-  			else rellenaColumnas(x, y-1, setPosicionInt(tomada.head,y,x,setPosicionInt(0, tomada.last, x, tablero)), f, fichas)
+  			if (tomada.head == 0) rellenaColumnas(x, y-1, setPosicionInt(r,x,y,tablero), f, fichas)
+  			else rellenaColumnas(x, y-1, setPosicionInt(tomada.head,x,y,setPosicionInt(0, x, tomada.last, tablero)), f, fichas)
   		else rellenaColumnas(x, y-1, tablero, f, fichas)
   }
   
@@ -145,7 +149,7 @@ object ToyBlast {
   }
   
   def rellenaColumnasOpt(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={//Optimizado
-  	val c = tomaColumna(x, tablero.length-1, tablero)
+  	val c = tomaColumna(x, y, tablero)
   	val tomada = tomaFicha(y-1, c)
   	if (y<0 || x<0) tablero
   	else
@@ -161,15 +165,15 @@ object ToyBlast {
   }
   
   def rellenarN1(tablero:List[List[Int]], fichas:List[Int]): List[List[Int]]={
-  	rellenar(8, 6, tablero, 4, fichas)
+  	rellenar(6, 8, tablero, 4, fichas)
   }
   
   def rellenarN2(tablero:List[List[Int]], fichas:List[Int]): List[List[Int]]={
-  	rellenar(16, 10, tablero, 5, fichas)
+  	rellenar(10, 16, tablero, 5, fichas)
   }
   
   def rellenarN3(tablero:List[List[Int]], fichas:List[Int]): List[List[Int]]={
-  	rellenar(26, 14, tablero, 6, fichas)
+  	rellenar(14, 26, tablero, 6, fichas)
   }
   
   val fichas1 = iniFichasN1()
@@ -184,14 +188,15 @@ object ToyBlast {
   val act12 = setPosicionBool(true, 3, 4, act1)
   val tablero12 = borradoTab(tablero1, act12)
   val tablero5 = iniTableroN1(List(4,2,4,2))
-  imprimirTablero(tablero5)
+  imprimir(tablero5)
   printf("\n")
   val a5 = seleccionarFicha(3, 4, tablero5, act1)
   val t5_1 = borradoTab(tablero5, a5)
-  imprimirTablero(t5_1)
+  imprimir(t5_1)
   printf("\n")
   val t5_2 = rellenarN1(t5_1, List(1,3,1,3))
-  imprimirTablero(t5_2)
+  print("\n")
+  imprimir(t5_2)
   printf("\n")
   
   
@@ -202,152 +207,158 @@ object ToyBlast {
    */
    // funciona bien
   def getPosicion(x: Int, y: Int, tablero: List[List[Int]]): Int = {
-    val laux: List[Int] = getPosicionX(x, tablero)
-    getPosicionY(y, laux)
+    val laux: List[Int] = getPosicionY(y, tablero)
+    getPosicionX(x, laux)
   }
- 
-  def getPosicionX(x: Int, tablero: List[List[Int]]): List[Int] = {
+ //y tiene lista de listas
+ //x tiene lista de enteros
+  def getPosicionY(y: Int, tablero: List[List[Int]]): List[Int] = {
     if (tablero.isEmpty) { //si no hay tablero
       null
     } else {
-      if (x == 0) {
+      if (y == 0) {
         tablero.head
       } else {
-        getPosicionX(x - 1, tablero.tail)
+        getPosicionY(y - 1, tablero.tail)
       }
     }
   }
 
-  def getPosicionY(y: Int, fila: List[Int]): Int = {
+  def getPosicionX(x: Int, fila: List[Int]): Int = {
     if (fila.isEmpty) { //si no hay tablero
       -1
     } else {
-      if (y == 0) {
+      if (x == 0) {
         fila.head
       } else {
-        getPosicionY(y - 1, fila.tail)
+        getPosicionX(x - 1, fila.tail)
       }
     }
   }
 
-  getPosicionX(1, tablero3)
+  getPosicionY(1, tablero3)
   getPosicion(1, 7, tablero3)
 
   //igual pero de bool, funciona bien
 
   def getPosicionBool(x: Int, y: Int, tablero: List[List[Boolean]]): Boolean = {
-    val laux: List[Boolean] = getPosicionXBool(x, tablero)
-    getPosicionYBool(y, laux)
+    val laux: List[Boolean] = getPosicionYBool(y, tablero)
+    getPosicionXBool(x, laux)
   }
 
-  def getPosicionXBool(x: Int, tablero: List[List[Boolean]]): List[Boolean] = {
+  def getPosicionYBool(y: Int, tablero: List[List[Boolean]]): List[Boolean] = {
     if (tablero.isEmpty) { //si no hay tablero
       null
     } else {
-      if (x == 0) {
+      if (y == 0) {
         tablero.head
       } else {
-        getPosicionXBool(x - 1, tablero.tail)
+        getPosicionYBool(y - 1, tablero.tail)
       }
     }
   }
 
-  def getPosicionYBool(y: Int, fila: List[Boolean]): Boolean = {
+  def getPosicionXBool(x: Int, fila: List[Boolean]): Boolean = {
     if (fila.isEmpty) { //si no hay tablero
       false
     } else {
-      if (y == 0) {
+      if (x == 0) {
         fila.head
       } else {
-        getPosicionYBool(y - 1, fila.tail)
+        getPosicionXBool(x - 1, fila.tail)
       }
     }
   }
 
-  getPosicionX(1, tablero3)
+  getPosicionY(1, tablero3)
   getPosicion(1, 7, tablero3)
   
   //PONE LA POSICON A LO QUE LE PASES, funciona guay
 
   def setPosicionBool(v:Boolean, x: Int, y: Int, tablero: List[List[Boolean]]): List[List[Boolean]] = {
-    setPosicionXBool(v, x, y, tablero)
+    if (tablero.isEmpty || x<0 || y<0 || y>=tablero.size || x>=tablero.head.size) {
+    	tablero
+    } else setPosicionYBool(v, x, y, tablero)
   }
   
-  def setPosicionXBool(v:Boolean, x: Int, y:Int, tablero: List[List[Boolean]]): List[List[Boolean]] = {
+  def setPosicionYBool(v:Boolean, x: Int, y:Int, tablero: List[List[Boolean]]): List[List[Boolean]] = {
     if (tablero.isEmpty) { //si no hay tablero
       null
     } else {
-      if (x == 0) {
-        setPosicionYBool(v, y, tablero.head) :: tablero.tail
+      if (y == 0) {
+        setPosicionXBool(v, x, tablero.head) :: tablero.tail
       } else {
-        tablero.head :: setPosicionXBool(v, x - 1, y, tablero.tail)
+        tablero.head :: setPosicionYBool(v, x, y - 1, tablero.tail)
       }
     }
   }
 
-  def setPosicionYBool(v:Boolean, y: Int, fila: List[Boolean]): List[Boolean] = {
-      if (y == 0) {
-        v :: fila.tail
-      } else {
-       fila.head :: setPosicionYBool(v, y - 1, fila.tail)
-      }
-    
+  def setPosicionXBool(v:Boolean, x: Int, fila: List[Boolean]): List[Boolean] = {
+  	if (fila.isEmpty) {
+  		null
+  	} else {
+	  		if (x == 0) {
+	        v :: fila.tail
+	      } else {
+	       fila.head :: setPosicionXBool(v, x - 1, fila.tail)
+	      }
+  	}
   }
   
  
  
  //Bomba horizontal
- def setFilaBool(v:Boolean, x: Int, actuar: List[List[Boolean]]): List[List[Boolean]] = {
-    setFilaBoolX(v, x, actuar)
+ def setFilaBool(v:Boolean, y: Int, actuar: List[List[Boolean]]): List[List[Boolean]] = {
+    setFilaBoolY(v, y, actuar)
   }
   
-  def setFilaBoolX(v:Boolean, x: Int, actuar: List[List[Boolean]]): List[List[Boolean]] = {
+  def setFilaBoolY(v:Boolean, y: Int, actuar: List[List[Boolean]]): List[List[Boolean]] = {//recorre buscando la fila y
     if (actuar.isEmpty) { //si no hay tablero
       null
     } else {
-      if (x == 0) {
-        setFilaBoolY(v, actuar.head) :: actuar.tail
+      if (y == 0) {
+        setFilaBoolX(v, actuar.head) :: actuar.tail
       } else {
-        actuar.head :: setFilaBoolX(v, x - 1, actuar.tail)
+        actuar.head :: setFilaBoolY(v, y - 1, actuar.tail)
       }
     }
   }
 
-  def setFilaBoolY(v:Boolean, fila: List[Boolean]): List[Boolean] = {
+  def setFilaBoolX(v:Boolean, fila: List[Boolean]): List[Boolean] = {//pone la fila a v
       if (fila.isEmpty) {
         Nil
       } else {
-       v :: setFilaBoolY(v, fila.tail)
+       v :: setFilaBoolX(v, fila.tail)
       }
     
   }
   
   //bomba vertical
-  def setColumnaBool(v:Boolean, y: Int, tablero: List[List[Boolean]]): List[List[Boolean]] = {
-    setColumnaBoolX(v, y, tablero)
+  def setColumnaBool(v:Boolean, x: Int, tablero: List[List[Boolean]]): List[List[Boolean]] = {
+    setColumnaBoolY(v, x, tablero)
   }
   
-  def setColumnaBoolX(v:Boolean, y:Int, tablero: List[List[Boolean]]): List[List[Boolean]] = {
+  def setColumnaBoolY(v:Boolean, x:Int, tablero: List[List[Boolean]]): List[List[Boolean]] = {//recorre todas las filas
     if (tablero.isEmpty) { //si no hay tablero
       null
     } else {
-        setColumnaBoolY(v, y, tablero.head) :: tablero.tail
+        setColumnaBoolX(v, x, tablero.head) :: tablero.tail
 
     }
   }
 
-  def setColumnaBoolY(v:Boolean, y: Int, fila: List[Boolean]): List[Boolean] = {
-      if (y == 0) {
+  def setColumnaBoolX(v:Boolean, x: Int, fila: List[Boolean]): List[Boolean] = {//cambia el valor x de la fila pasa por v
+      if (x == 0) {
         v :: fila.tail
       } else {
-       fila.head :: setColumnaBoolY(v, y - 1, fila.tail)
+       fila.head :: setColumnaBoolX(v, x - 1, fila.tail)
       }
     
   }
   
   //TNT
   
-  def tnt(x: Int, y: Int, actuar: List[List[Boolean]]): List[List[Boolean]] = {
+  def tnt(x: Int, y: Int, actuar: List[List[Boolean]]): List[List[Boolean]] = {//por comprobar
   
   	val aux1 = setPosicionBool(true, x+1, y, actuar)
   	val aux2 = setPosicionBool(true, x+1, y+1, aux1)
@@ -365,8 +376,7 @@ object ToyBlast {
     if (tablero.isEmpty) { //si no hay tablero
       null
     } else {
-    	rompecabezasY(color, tablero.head )
-    	rompecabezas(color, tablero.tail)
+    	rompecabezasY(color, tablero.head)::rompecabezas(color, tablero.tail)
     }
   }
 
@@ -396,7 +406,7 @@ object ToyBlast {
  				tnt(x, y, actuar)
  		} else if  (getPosicion(x, y, tablero) >= 11) { //Rompecabezas
  				rompecabezas((getPosicion(x, y, tablero)-10), tablero)
- 		}
+ 		} else {
  		
     val laux1 =
       if ((((x - 1) >= 0) && getPosicion(x, y, tablero) == getPosicion(x - 1, y, tablero))) { //la x mayor o igual que 0
@@ -424,7 +434,7 @@ object ToyBlast {
       
 
     val laux4 =
-      if ((((y + 1) < getPosicionX(x, tablero).length) && getPosicion(x, y, tablero) == getPosicion(x, y + 1, tablero))) { //la y menor que la longitud de y
+      if ((((y + 1) < getPosicionY(y, tablero).length) && getPosicion(x, y, tablero) == getPosicion(x, y + 1, tablero))) { //la y menor que la longitud de y
         //PONER A TRUEEE
         seleccionarFichaAux(x, y, tablero,  setPosicionBool(true, x, y, laux3))
       } else {
@@ -432,6 +442,7 @@ object ToyBlast {
       }
 
     laux4
+    }
   }
 
   def seleccionarFichaAux(x: Int, y: Int, tablero: List[List[Int]], actuar: List[List[Boolean]]): List[List[Boolean]] = {
@@ -461,7 +472,7 @@ object ToyBlast {
       }
 
     val laux4 =
-      if ((((y + 1) < getPosicionX(x, tablero).length) && getPosicion(x, y, tablero) == getPosicion(x, y + 1, tablero)) && !getPosicionBool(x, y+1, laux3)) { //la y menor que la longitud de y
+      if ((((y + 1) < getPosicionY(y, tablero).length) && getPosicion(x, y, tablero) == getPosicion(x, y + 1, tablero)) && !getPosicionBool(x, y+1, laux3)) { //la y menor que la longitud de y
         seleccionarFichaAux(x, y+1, tablero, laux3)
       } else {
         laux3
@@ -470,12 +481,33 @@ object ToyBlast {
     laux4
   }
   
- def imprimirTablero(tablero: List[List[Int]]): Int = {
+ def imprimir(tablero:List[List[Int]]): Int={
+ 		if (tablero.isEmpty){
+ 			-1
+ 		} else {
+ 			print("  - ")
+ 			imprimirCabecera(0, tablero.head.size)+imprimirTablero(0, tablero)
+ 		}
+
+ }
+  
+ def imprimirCabecera(c:Int, l:Int): Int={
+ 		if (c==l){
+ 			print("\n\n")
+ 			-1
+ 		} else {
+ 			print(c + "  ")
+ 			imprimirCabecera(c+1, l)
+ 		}
+ }
+  
+ def imprimirTablero(c:Int, tablero: List[List[Int]]): Int = {
     if (tablero.isEmpty) { //si no hay tablero
       -1
     } else {
+    	print(c + " - ")
     	imprimirTableroY(tablero.head)
-    	imprimirTablero(tablero.tail)
+    	imprimirTablero(c+1, tablero.tail)
     }
   }
 
@@ -554,7 +586,7 @@ object ToyBlast {
     }
   }
   
-  imprimirTablero(tablero1)
+  imprimir(tablero1)
   imprimirTableroBool(act1)
   
   // val salidaAux11 =setPosicionBool(true, 1, 1, act1)
@@ -563,7 +595,7 @@ object ToyBlast {
 
 imprimirTableroBool(salidaAux11)
 
-imprimirTablero(tableroBomba)
+imprimir(tableroBomba)
 
 	print("numero a borrar " + contarBorrar(salidaAux11))
 
