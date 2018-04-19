@@ -101,41 +101,56 @@ object ToyBlast {
     
   }
   
-  def tomaColumna(x:Int, y:Int, tablero:List[List[Int]]): List[Int]={
+  /*def tomaColumna(x:Int, y:Int, tablero:List[List[Int]]): List[Int]={
   	if (x<0 || y<0 || tablero.isEmpty) Nil
   	else tablero.apply(y).apply(x)::tomaColumna(x, y-1, tablero)
-  }
+  }*/
   
-  def tomaColumna2(x:Int, tablero:List[List[Int]]): List[Int]={
+  def tomaColumna(x:Int, y:Int, tablero:List[List[Int]]): List[Int]={
   	if (x<0 || tablero.isEmpty) Nil
-  	else tablero.head.apply(x)::tomaColumna2(x, tablero.tail)
+  	else {
+  		if (y<(tablero.size-1)) tomaColumna(x, y, tablero.init)//quitamos filas hasta llegar a y
+  		else {
+  			//println(tablero.last.apply(x))																					//Borrar
+  			tomaColumna(x, y-1, tablero.init):::List(tablero.last.apply(x))
+  		}
+  	}
   }
    
-  def tomaFicha(y:Int, columna:List[Int]): List[Int]={//toma la primera ficha mayor que 0 que encuentre antes del nivel 0
+  /*def tomaFicha(y:Int, columna:List[Int]): List[Int]={//toma la primera ficha mayor que 0 que encuentre antes del nivel 0
   	if (y<0 || columna.isEmpty) {print("\nfin columna")
   		List(0, 0)} // por seguridad
-  	else if (columna.apply(y) == 0) tomaFicha(y-1, columna)
-  		else {print("\nencontré una! - ", y)
+  	else if (columna.apply(y) == 0){ tomaFicha(y-1, columna)
+  		}else {print("\nencontré una! - " + y)
   			List(columna.apply(y), y)}
-  }
+  }*/
   
-  def tomaFicha2(y:Int, columna:List[Int]): List[Int]={
-  	if (columna.isEmpty) List(0, 0)
-  	else
-  		if (columna.last == 0) tomaFicha2(y-1, columna.init)
-  		else List(columna.last, y)
+  def tomaFicha(y:Int, columna:List[Int]): List[Int]={
+  	if (columna.isEmpty) {
+  		//println("Fin columna")																					//Borrar
+  		List(0, 0)
+  	} else if (columna.last == 0) {
+  		//println("y" + y + "= " + columna.last)																					//Borrar
+  		tomaFicha(y-1, columna.init)
+  	}	else {
+  		//println("--y" + y + "= " + columna.last)																					//Borrar
+  		List(columna.last, y)
+  	}
   }
   
   def rellenaColumnas(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={
-  	val c = tomaColumna(x, tablero.length-1, tablero)
-  	val tomada = tomaFicha(y, c)
+  	//print("-x" + x + "-\n")																					//Borrar
+  	val tomada = tomaFicha(y, tomaColumna(x, y, tablero))
   	val r = fichas.apply(Random.nextInt(f))
   	if (y<0 || x<0) tablero
   	else
-  		if (tablero.apply(y).apply(x) == 0)
-  			if (tomada.head == 0) rellenaColumnas(x, y-1, setPosicionInt(r,x,y,tablero), f, fichas)
-  			else rellenaColumnas(x, y-1, setPosicionInt(tomada.head,x,y,setPosicionInt(0, x, tomada.last, tablero)), f, fichas)
-  		else rellenaColumnas(x, y-1, tablero, f, fichas)
+  		if (tablero.apply(y).apply(x) == 0) {
+  			//print("\n\nHay que sustituir\n")																					//Borrar
+  			if (tomada.head == 0) {//print("por Random\n")																					//Borrar
+  			rellenaColumnas(x, y-1, setPosicionInt(r, x, y, tablero), f, fichas)
+  			} else {//print("\n Cambio " + y + " con " + tablero.apply(y).apply(x) + " por " + tomada.last + " con " +  + tomada.head + "\n")																					//Borrar
+  			rellenaColumnas(x, y-1, setPosicionInt(tomada.head, x, y, setPosicionInt(0, x, tomada.last, tablero)), f, fichas)}
+  		} else rellenaColumnas(x, y-1, tablero, f, fichas)
   }
   
   /*def rellenaColumnas2(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={
@@ -143,20 +158,25 @@ object ToyBlast {
   }*/
    
   def rellenaColumnasOptRand(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={//rellena desde esa posición con enteros aleatorios posibles
+  	//print("-x" + x + "-\n")																					//Borrar
   	val r = fichas.apply(Random.nextInt(f))
   	if (y<0 || x<0) tablero
-  	else rellenaColumnasOptRand(x, y-1, setPosicionInt(r,y,x,tablero), f, fichas)
+  	else rellenaColumnasOptRand(x, y-1, setPosicionInt(r,x,y,tablero), f, fichas)
   }
   
   def rellenaColumnasOpt(x:Int, y:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={//Optimizado
-  	val c = tomaColumna(x, y, tablero)
-  	val tomada = tomaFicha(y-1, c)
+  	//print("-x" + x + "-\n")																					//Borrar
+  	val tomada = tomaFicha(y-1, tomaColumna(x, y, tablero))
   	if (y<0 || x<0) tablero
   	else
-  		if (tablero.apply(y).apply(x) == 0)
-  			if (tomada.head == 0) rellenaColumnasOptRand(x, y, tablero, f, fichas)//si no ha encontrado, los siguientes darán igual resultado, no busca más
-  			else rellenaColumnasOpt(x, y-1, setPosicionInt(tomada.head,y,x,setPosicionInt(0, tomada.last, x, tablero)), f, fichas)
-  		else rellenaColumnasOpt(x, y-1, tablero, f, fichas)
+  		if (tablero.apply(y).apply(x) == 0) {
+  			//print("\n\nHay que sustituir\n")																					//Borrar
+  			if (tomada.head == 0) { //print("por Random\n")																					//Borrar
+  			rellenaColumnasOptRand(x, y, tablero, f, fichas)//si no ha encontrado, los siguientes darán igual resultado, no busca más
+  			} else {//print("\n Cambio " + y + " con " + tablero.apply(y).apply(x) + " por " + tomada.last + " con " +  + tomada.head + "\n")																					//Borrar
+  			rellenaColumnasOpt(x, y-1, setPosicionInt(tomada.head,x,y,setPosicionInt(0, x, tomada.last, tablero)), f, fichas)
+  			}
+  		} else rellenaColumnasOpt(x, y-1, tablero, f, fichas)
   }
   
   def rellenar(x:Int, ly:Int, tablero:List[List[Int]], f:Int, fichas:List[Int]): List[List[Int]]={
@@ -516,7 +536,7 @@ object ToyBlast {
       println
       -1
     } else {
-    	print(colocarColores(fila.head) + "  ")
+    	print(fila.head + "  ")
     	imprimirTableroY(fila.tail)
     }
   }
@@ -560,20 +580,6 @@ object ToyBlast {
     }
   }
   
-  //cambiamos los numeros por colores
-  def colocarColores(color: Int): Char ={
-    color match {
-      case 1 => 'A'
-      case 2 => 'R'
-      case 3 => 'N'
-      case 4 => 'V'
-      case 5 => 'P'
-      case 6 => 'M'
-      case 7 => 'G'
-      case 8 => 'B'
-    }
-  }
-  
   //borramos, comprobamos esto que pone la bomba y rellenamos despues haciendo que baje
   def colocalBomba(x: Int, y: Int, tablero: List[List[Int]], actuar: List[List[Boolean]]): List[List[Int]] = {
 
@@ -599,7 +605,7 @@ object ToyBlast {
       tablero
     }
   }
-  
+  /*
   imprimir(tablero1)
   imprimirTableroBool(act1)
   
@@ -611,7 +617,7 @@ imprimirTableroBool(salidaAux11)
 
 imprimir(tableroBomba)
 
-	print("numero a borrar " + contarBorrar(salidaAux11))
+	print("numero a borrar " + contarBorrar(salidaAux11))*/
 
   def guardarPartida() = {
   }
